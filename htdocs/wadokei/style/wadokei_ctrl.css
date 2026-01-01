@@ -1,0 +1,37 @@
+@charset "utf-8";
+#wadokeiCtrl {
+	padding: 0.5em;
+	font-size: small;
+}
+#wadokeiCtrl .lb {
+	padding-right: 0.3em !important;
+	text-align: right;
+}
+#wadokeiCtrl .vl {
+	padding: 0 0.5em;
+	text-align: center;
+	border: thin solid darkgray;
+	border-radius: 4px;
+}
+#base_date {
+	padding: 0.2em 1em !important;
+}
+input[type="range"] {
+	width: 97%;
+}
+div.disabled {
+	color: darkgray;
+}
+datalist {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  writing-mode: vertical-lr;
+  width: 97%;
+}
+
+datalist option {
+	font-size: xx-small;
+ 	padding: 0;
+	transform: rotate(-90deg);
+}

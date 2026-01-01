@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>R2 SVG和時計</title>
+	<link rel="icon" href="../img/icon32.svg" type="image/svg+xml">
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous" />
+	<link href="style/wadokei_ctrl.css" rel="stylesheet" />
+	<script src="js/wadokei.js"></script>
+	<script src="js/wadokei-gui.js"></script>
+</head>
+<body>
+	<div class="container-fluid">
+		<div id="drawArea" class="fig"></div>
+		<div id="wadokeiCtrl">
+			<div class="row justify-content-center align-items-center mt-1">
+				<div class="col-sm-auto">
+					<div class="form-check form-switch">
+					  <input class="form-check-input" type="checkbox" role="switch" id="autoHimekuri">
+					  <label class="form-check-label" for="autoHimekuri">auto</label>
+					</div>
+				</div>
+				<div class="col-sm-auto">
+					<select id="locaMenu"><option value="" class="emp">いまどこ？</option></select>
+				</div>
+				<div class="col-sm-3">
+					<div class="row gx-0 align-self-start">
+						<div class="col-sm-6 lb">日の出</div><div class="col-sm-6 vl" id="sunrise_time">04:23</div>
+					 </div>
+				</div>
+				<div class="col-sm-3">
+					<div class="row gx-0 align-self-start">
+						<div class="col-sm-6 lb">日の入り</div><div class="col-sm-6 vl" id="sunset_time">19:43</div>
+					</div>
+				</div>
+				<div class="col-sm-auto">
+					<input type="button" name="goToday" id="goToday" value="今日" />
+				</div>				
+			</div>
+			<div class="row justify-content-center align-items-center mt-1">
+				<div class="col-sm-auto gx-0 lb">
+					<label for="mdRange">表示日付</label>
+				</div>
+				<div class="col-sm-9 gx-0">
+					<input type="range" min="0" max="365" id="mdRange" list="mdRangeDataList" />
+					<datalist id="mdRangeDataList"></datalist>
+				</div>
+				<div class="col-sm-auto gx-0">
+					<div class="vl" id="base_date"></div>
+				</div>
+				
+			</div>
+		</div><!-- end of #wadokeiCtrl -->
+
+		<hr />
+		<div>
+			<ul>
+				<li>
+					いろんな場所のいろんな日付で和時計を表示させて楽しむページです。
+					<ul>
+						<li>
+							緯度経度から日の出・日の入り時刻を計算するというシャレオツなことはしておりません。文系SEには無理ぽよ～
+						</li>
+						<li>
+							和時計は24時間で1周するので、1度回転するのに4分かかります。相当差がないと変化がわかりません。
+						</li>
+						<li>
+							昔の割駒式和時計で文字盤が自動で動かないやつは、二十四節気ごとに(つまり約半月に一度)文字盤を交換していたらしいです。
+						</li>
+						<li>
+							なので、いろんな場所のいろんな日付を選択して、その日の出・日の入り時刻から和時計を表示させるのが楽しいですよね～。(個人の感想です。)
+						</li>
+						<li>
+							文字盤はJavascript で SVG を書いて描画しています。
+						</li>
+					</ul>
+				</li>
+				<li>
+					文字盤の漢字は、<b>たぬき侍</b>さんのGoogle Fonts <b>Yusei Magic</b>を使用しています。
+				</li>
+				<li>日の出・日の入り時刻は、<b>国立天文台</b>ホームページより拝借しました。
+					<ul>
+						<li><a href="https://eco.mtk.nao.ac.jp/koyomi/dni/">各地のこよみ (日の出入り、月の出入り、南中時、月齢) - 国立天文台暦計算室</a></li>
+					</ul>
+				</li>
+			</ul>
+		</div>
+		<hr />
+		<a href="../" >戻る</a>
+	</div><!-- end of .container -->
+	<script>
+		const wadokeiGui =WadokeiGui(); 
+		/**
+		 * 画面ロードイベントリスナー
+		 */
+		window.addEventListener("load", wadokeiGui.loadHandler);
+	</script>
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous"></script>
+</body>
+</html>
