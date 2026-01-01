@@ -1,0 +1,100 @@
+html {
+    height: 100%;
+}
+body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    font-family:
+        'BIZ UDPGothic', 'BIZ UDPMincho',
+        'Meiryo', 'メイリオ',
+        'Hiragino Kaku Gothic ProN', 'ヒラギノ角ゴ ProN W3',
+        sans-serif;
+}
+pre,
+code {
+    font-family: 'BIZ UDGothic', 'BIZ UDMincho', ui-monospace;
+}
+h1, h2, h3 {
+    font-family:
+        'Yusei Magic',
+        'BIZ UDPGothic', 'BIZ UDPMincho',
+        'Meiryo', 'メイリオ',
+        'Hiragino Kaku Gothic ProN', 'ヒラギノ角ゴ ProN W3',
+        sans-serif;
+}
+.created_at {
+    text-align: right;
+    font-size: 50%;
+    margin-bottom: 0.5rem;
+    margin-right: 0.5rem;
+}
+.pageheader {
+    width: 100%;
+    background-color: #3F3F3F;
+    border-bottom: 3px solid #FF8A00;
+    padding: 2rem 0 0 0;
+    margin: 0;
+}
+
+.pageheader .logo {
+    font-size: 250%;
+    font-family: 'Diplomata', cursive;
+    font-weight: 400;
+    margin: 0 0 0 1rem;
+    padding: 0;
+    text-align: left;
+}
+
+.pageheader .description {
+    color: white;
+    font-size: 80%;
+    font-family:
+        'BIZ UDPGothic', 'BIZ UDPMincho',
+        'Meiryo', 'メイリオ',
+        'Hiragino Kaku Gothic ProN', 'ヒラギノ角ゴ ProN W3',
+        sans-serif;
+    margin: 1rem 0 0 3rem;
+    padding: 0;
+    text-align: left;
+}
+
+.pageheader a,
+.pageheader a:active,
+.pageheader a:hover,
+.pageheader a:visited,
+.pageheader a:link {
+    color: #FF8A00;
+    text-decoration: none;
+}
+.article {
+	margin-top: 2rem;
+    margin-bottom: 2rem;
+    padding-left: 1rem;
+    background-color: whitesmoke;
+    border: thin solid darkslategray;
+    border-radius: 10px;
+}
+.article_body {
+    line-height: 2rem;
+}
+.pagefooter {
+    position: sticky;
+    top: 100vh;
+    width: 100%;
+    font-size: small;
+    background-color: #3F3F3F;
+}
+.pagefooter a,
+.pagefooter a:active,
+.pagefooter a:hover,
+.pagefooter a:visited,
+.pagefooter a:link {
+    color: whitesmoke;
+    text-decoration: none;
+}
+.pagefooter ul {
+    list-style-type: none;
+    padding: 1rem 0 1rem 1rem;
+    font-size: 90%;
+}
