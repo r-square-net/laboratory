@@ -85,7 +85,6 @@
     const answerHistory = document.querySelector("#history table tbody");
     // ダイアログ「閉じる」ボタン
     const dialogCloseBtn = document.querySelector("dialog button#dialog_close");
-
     /** 
      * 出題された数字
      * @type {Array} 
@@ -223,6 +222,29 @@
             dialog.close();
         }
     }
+    /**
+     * 出題後設定値を変更された場合に
+     * 入力フィールドをリセットするための処理
+     */
+    function restFields(event) {
+        // 出題された数字(出力用)をemptyにする
+        questionNum.setAttribute("value", "");
+        // 回答入力フィールドをemptyにする
+        answerNum.value="";
+        
+        // 「決定」ボタンを非活性にする
+        answerBtn.disabled = true;
+        answerNum.disabled = true;
+
+        // 回答回数初期化
+        answerCount = 0;
+        
+        // 回答履歴リセット
+        resetHistoryRows();
+        answerHistory.insertAdjacentHTML("afterbegin", "<tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>");
+    }
+    questionLen.addEventListener("change", restFields);
+    questionLimitNum.addEventListener("change", restFields);
     /**
      * 「出題する」ボタン押下時の処理
      */
