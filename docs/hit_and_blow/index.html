@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>R2 Hit and Blow</title>
+	<link rel="icon" href="../img/icon32.svg" type="image/svg+xml">
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+	<link href="https://fonts.googleapis.com/css2?family=Diplomata&display=swap" rel="stylesheet" />
+	<link href="https://fonts.googleapis.com/css2?family=Yusei+Magic&display=swap" rel="stylesheet" />
+	<link href="https://fonts.googleapis.com/css2?family=BIZ+UDGothic&display=swap" rel="stylesheet" />
+	<link href="https://fonts.googleapis.com/css2?family=BIZ+UDMincho&display=swap" rel="stylesheet" />
+	<link href="https://fonts.googleapis.com/css2?family=BIZ+UDPGothic&display=swap" rel="stylesheet" />
+	<link href="https://fonts.googleapis.com/css2?family=BIZ+UDPMincho&display=swap" rel="stylesheet" />
+
+	<link href="style/hit_and_blow.css" rel="stylesheet" />
+</head>
+<body>
+<div class="contents">
+    <h3>Hit and Blow</h3>
+    <p id="description">
+        1,2,3,4,5,6,7,8,9 の数字の中から4～6桁の数字の種類と位置とを当てるゲームです。<br />
+        種類と位置が一致した場合は Hit , 種類のみ該当した場合は Blow となります。<br />
+        隠されたお題(秘密の番号)が「3751」のとき, プレイヤーが「3156」と回答した場合「2 Hits, 1 Blow」となります。 
+    </p>
+    <div class="game_wrapper">
+        <div id="question">        
+            <div class="_q_limit">
+                <span class="bold">1から</span>
+                <input type="number" id="question_limit_num" name="question_limit_num" minlength="1" maxlength="1" size="1" min="7" max="9" value="7" />
+                <span class="bold">までの</span>
+            </div>
+            <div class="_q_length">
+                <input type="number" id="question_len" name="question_len" minlength="1" maxlength="1" size="1" min="4" max="6" value="4" />
+                <span class="bold">桁の秘密の番号を</span>
+            </div>
+            <button id="question_btn" name="question_btn">出題する</button>
+        </div>
+        <div id="himitsu_no">
+            <div class="bold">お題</div>
+            <input type="text" id="question_num" name="question_num" minlength="9" maxlength="9" size="9" value="" readonly />
+        </div>
+        <div id="notice">&nbsp;</div>
+        <div id="answer">
+            <div class="bold">回答</div>
+            <input type="text" inputmode="numeric" id="answer_num" name="answer_num" minlength="9" maxlength="9" size="9" disabled/>
+            <button id="answer_btn" name="answer_btn" disabled>決定！</button>
+        </div>
+        <div id="history">
+            <table>
+                <caption>回答履歴</caption>
+                <thead>
+                    <tr><th>No</th><th>Answer</th><th>Hit(s)</th><th>Blow(s)</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <hr />
+    <a href="../" >戻る</a>
+</div>
+<dialog>
+    <div id="dialog_message"></div>
+    <div class="ctrl">
+        <button id="dialog_close">閉じる</button>
+    </div>
+</dialog>
+<script>
+    // 選択する数字の個数入力フィールド
+    const questionLen = document.getElementById("question_len");
+    // 選択する数字の最大値入力フィールド
+    const questionLimitNum  = document.getElementById("question_limit_num");
+    // 「出題する」ボタン
+    const questionBtn = document.getElementById("question_btn");
+    // 出題された数字(出力用)
+    const questionNum = document.getElementById("question_num");
+    // 回答「決定」ボタン
+    const answerBtn = document.getElementById("answer_btn");
+    // 回答入力フィールド
+    const answerNum = document.getElementById("answer_num");
+    // 回答履歴
+    const answerHistory = document.querySelector("#history table tbody");
+    // ダイアログ「閉じる」ボタン
+    const dialogCloseBtn = document.querySelector("dialog button#dialog_close");
+
+    /** 
+     * 出題された数字
+     * @type {Array} 
+     */
+    let question;
+    /** 
+     * 選択する数字の個数
+     * @type {int}
+     */
+    let questionMaxLen;
+    /** 
+     * 選択する数字の最大値 (選択する数字の個数 + n)
+     * @type {int}
+     */
+    let questionEndNum;
+    /** 
+     * 回答回数
+     * @type {int}
+     */
+    let answerCount = 0;
+
+    /**
+     * min 以上 max 以下のランダムな整数を取得する
+     * @param {int} min 最小値
+     * @param {int} max 最大値
+     * @return {int} min 以上 max 以下のランダムな整数
+     */
+    function getRandomIntInclusive(min, max) {
+        const minCeiled = Math.ceil(min);
+        const maxFloored = Math.floor(max);
+        return Math.floor(Math.random() * (maxFloored - minCeiled + 1) + minCeiled); // 上限を含み、下限も含む
+    }
+
+    /**
+     * begin 以上 end 以下の範囲の数値の配列を返す
+     * @param {int} begin
+     * @param {int} end
+     * @return {Array} begin 以上 end 以下の範囲の数値の配列
+     */
+    function range (begin, end) {
+        return Array.from(
+            { length: (end - begin + 1) },
+            (element, index) => begin + index
+        );
+    }
+    /**
+     * お題を生成する
+     * @return {object} 次の形式のオブジェクト
+     *    {"question":${出題された数値配列}, "questionMaxLen":${出題する数字の個数}, "questionEndNum":${出題する数値の最大値}}
+     */
+    function makeQuestion() {
+        const defaultLen = 4;
+        const limitLen = 9;
+        const yobun = 3;
+        const qLen = questionLen.value;
+        const qLimit = questionLimitNum.value;
+        let maxLen = defaultLen;
+        if (isNaN(parseInt(qLen)) || parseInt(qLen) < defaultLen ) {
+            // nothing to do.
+        } else if (parseInt(qLen) > limitLen) {
+            maxLen = limitLen;
+        } else {
+            maxLen = parseInt(qLen);
+        }
+        const end = !isNaN(parseInt(qLimit)) ? parseInt(qLimit) : ((maxLen + yobun) > limitLen ? limitLen : (maxLen + yobun));
+        const srcNums = range(1, end, 1);
+        const qNums = Array();
+        while (qNums.length < maxLen) {
+            const index = getRandomIntInclusive(0, srcNums.length - 1);
+            const qNum = srcNums[index];
+            qNums.push(qNum);
+            srcNums.splice(index, 1);
+        }
+        return {"question":qNums, "questionMaxLen":maxLen, "questionEndNum":end};
+    };
+    function makeErrorMessage(){
+        return (`1から${questionEndNum}の数字の中から${questionMaxLen}個(重複可)選んで入力してください。`); 
+    }
+    /**
+     * 回答入力値のヴァリデーション
+     * @return {string} エラーがあるときエラーメッセージ.エラーなしのときはnull.
+     */
+    function valid (ans, maxLen, endNum) {
+        let isError = false;
+        const testAns = String(ans);
+        if (testAns.length != maxLen) {
+            isError = true;
+        } else {
+            let testLen = testAns.length;
+            for (var i = 0; i < testLen; i++) {
+                const testNum = parseInt(testAns.slice(i,i+1));
+                if (isNaN(testNum)) {
+                    isError = true;
+                    break;
+                } else if (testNum <= 0 || testNum > endNum) {
+                    isError = true;
+                    break;
+                }
+            }
+        }
+        if (isError) {
+            return makeErrorMessage();
+        }
+        return null;
+    }
+    /**
+     * 回答履歴のデータ行をリセットする.
+     */
+    function resetHistoryRows(){
+        const historyRows = answerHistory.querySelectorAll("tr");
+        if (historyRows && historyRows.length > 0) {
+            historyRows.forEach((hRow)=>{hRow.remove()});
+        }
+    }
+    /**
+     * アラートダイアログを開く
+     * @param {string} ダイアログに表示するメッセージ
+     */
+    function showAlert(message){
+        const dialog = document.querySelector("dialog");
+        if (dialog) {
+            const dm = dialog.querySelector("#dialog_message");
+            dm.innerHTML = message;
+            dialog.showModal();
+        }
+    }
+    /**
+     * アラートダイアログを閉じる
+     */
+    function closeAlert(event){
+        const dialog = document.querySelector("dialog");
+        if (dialog) {
+            const dm = dialog.querySelector("#dialog_message");
+            dm.innerHTML = "";
+            dialog.close();
+        }
+    }
+    /**
+     * 「出題する」ボタン押下時の処理
+     */
+    questionBtn.addEventListener("click", function(event){
+        // 回答回数初期化
+        answerCount = 0;
+        // 回答履歴リセット
+        resetHistoryRows();
+        answerHistory.insertAdjacentHTML("afterbegin", "<tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>");
+
+        // 出題する
+        const ret = makeQuestion();
+        question = ret.question;
+        questionMaxLen = ret.questionMaxLen;
+        questionEndNum = ret.questionEndNum;
+        // 出題された数字の欄は"?"にしておく
+        let qMask = "";
+        for (var i = 0; i < questionMaxLen; i++) {
+            qMask += "?";
+        }
+        questionNum.setAttribute("value", qMask);
+        // 回答入力フィールドの属性をセットする
+        answerNum.disabled = false;
+        answerNum.setAttribute("minlength", questionMaxLen);
+        answerNum.setAttribute("maxlength", questionMaxLen);
+        answerNum.value = "";
+        answerNum.focus();
+        
+        // 「決定」ボタンを活性化
+        answerBtn.disabled = false;
+        
+        // 注意事項を表示する
+        const noticeElement = document.getElementById("notice");
+        if (noticeElement) {
+            noticeElement.innerHTML = "※ " + makeErrorMessage();
+        }
+    });
+    /**
+     * 「決定」ボタン押下時の処理
+     */
+    answerBtn.addEventListener("click", function(event){
+        // 回答した数字
+        const ans = answerNum.value;
+        // 入力チェック
+        const errorMessage = valid(ans, questionMaxLen, questionEndNum);
+        if (errorMessage) {
+            showAlert(errorMessage);
+            return false;
+        }
+        // 種類と位置が一致している数字の配列
+        const hit = Array();
+        // 種類のみ該当している数字の配列
+        const blow = Array();
+        // 回答した数字を配列へ変換する
+        const aNum = Array.from(String(ans), (a)=>parseInt(a));
+        // hitをチェックする
+        for (var i = 0; i < questionMaxLen; i++) {
+            const currentAns = aNum[i];
+            if (currentAns == question[i]) {
+                hit.push(currentAns);
+            }
+        }
+        // blowをチェックする
+        for (var i = 0; i < questionMaxLen; i++) {
+            const currentAns = aNum[i];
+            if (hit.indexOf(currentAns) >= 0) {
+                continue;
+            }
+            if (blow.indexOf(currentAns) >= 0) {
+                continue;
+            }
+            if (question.indexOf(currentAns) >= 0) {
+                blow.push(currentAns);
+            }
+        }
+        if (answerCount == 0) {
+            // 初回は空のデータ行があるので削除しておく
+            resetHistoryRows();
+        }
+        // 回答回数カウントアップ
+        answerCount++;
+        // 回答履歴出力
+        const result = `<tr><td>${answerCount}</td><td>${ans}</td><td>${hit.length}</td><td>${blow.length}</td></tr>`;
+        answerHistory.insertAdjacentHTML("afterbegin", result);
+        
+        // 全 hit した場合
+        if (hit.length == questionMaxLen) {
+            // "?"にしておいた出題された数字の欄に正解を出力する
+            questionNum.setAttribute("value", question.join(""));
+            // 「決定」ボタンを非活性にする
+            answerBtn.disabled = true;
+            answerNum.disabled = true;
+            showAlert("正解!!");
+        }
+    });
+    dialogCloseBtn.addEventListener("click",closeAlert);
+</script>
+</body>
+</html>

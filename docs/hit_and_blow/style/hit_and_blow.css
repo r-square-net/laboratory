@@ -1,0 +1,108 @@
+html {
+    height: 100%;
+}
+body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    font-family:
+        'BIZ UDPGothic', 'BIZ UDPMincho',
+        'Meiryo', 'メイリオ',
+        'Hiragino Kaku Gothic ProN', 'ヒラギノ角ゴ ProN W3',
+        sans-serif;
+}
+h1, h2, h3, th, .bold {
+    font-family:
+        'Yusei Magic',
+        'BIZ UDPGothic', 'BIZ UDPMincho',
+        'Meiryo', 'メイリオ',
+        'Hiragino Kaku Gothic ProN', 'ヒラギノ角ゴ ProN W3',
+        sans-serif;
+}
+.contents {
+    padding: 0 2rem 0 2rem;
+}
+#description {
+    line-height: 1.5rem;
+}
+.game_wrapper {
+    padding: 1.5rem 2rem;
+    min-width: 28rem;
+    max-width: 35rem;
+    width: 28rem;
+    background-color: #F1F3E0;
+    border-radius: 2%;
+    border: #D2DCB6 solid thin;
+    & .bold {
+        font-weight: 500;
+    } 
+}
+#himitsu_no, #notice, #history {
+    margin-top: 1.5rem;
+}
+#question, #himitsu_no, #answer {
+    font-size: large;
+    line-height: 2rem;
+    vertical-align: baseline;
+}
+#question, #himitsu_no {
+    display:flex;
+    & input[type="text"] {
+        color: red;
+    }
+    & input[type="number"] {
+        width: 2.5rem;
+    }
+    & ._q_length {
+        margin-left: 0.8rem;
+    }
+}
+#notice {
+    font-size: smaller;
+}
+#answer {
+    display:flex;
+    margin-top: 0.5rem;
+}
+input {
+    font-size: x-large;
+    line-height: 2rem;
+    text-align: center;
+    margin-left: 0.2rem;
+}
+button {
+    margin-left: 0.2rem;
+}
+table {
+    border-collapse: collapse;
+    background-color: #D2DCB6;
+    & th, & td {
+        border: thin #778873 solid;
+        padding: 0.2rem 0.5rem 0.2rem 0.5rem;
+    }
+    & caption {
+        margin-bottom: 0.2rem;
+    }
+    & tbody tr:nth-of-type(even) {
+        background-color: #EBF4DD;
+    }
+    & tbody tr:nth-of-type(odd) {
+        background-color: white;
+    }
+    & tbody td {
+        text-align: right;
+    }
+    & tbody td:nth-of-type(2) {
+        text-align: center;
+    }
+}
+dialog {
+    border-radius: 15px 15px 15px 15px;
+    padding: 1rem 2rem;
+}
+dialog div.ctrl {
+    margin-top: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
