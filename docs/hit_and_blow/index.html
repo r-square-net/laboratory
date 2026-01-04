@@ -200,6 +200,15 @@
         }
     }
     /**
+     * 回答履歴表初期化
+     */
+    function initHistoryList(){
+        // 回答履歴データ行リセット
+        resetHistoryRows();
+        // empty行セット
+        answerHistory.insertAdjacentHTML("afterbegin", "<tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>");
+    }
+    /**
      * アラートダイアログを開く
      * @param {string} ダイアログに表示するメッセージ
      */
@@ -236,12 +245,16 @@
         answerBtn.disabled = true;
         answerNum.disabled = true;
 
+        // お題
+        question = Array();
+        questionMaxLen = undefined;
+        questionEndNum = undefined;
+
         // 回答回数初期化
         answerCount = 0;
         
         // 回答履歴リセット
-        resetHistoryRows();
-        answerHistory.insertAdjacentHTML("afterbegin", "<tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>");
+        initHistoryList();
     }
     questionLen.addEventListener("change", restFields);
     questionLimitNum.addEventListener("change", restFields);
@@ -252,8 +265,7 @@
         // 回答回数初期化
         answerCount = 0;
         // 回答履歴リセット
-        resetHistoryRows();
-        answerHistory.insertAdjacentHTML("afterbegin", "<tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>");
+        initHistoryList();
 
         // 出題する
         const ret = makeQuestion();
